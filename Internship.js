@@ -1,0 +1,578 @@
+// import React, { useEffect, useState } from "react";
+// import { Heading, Box, Text, HStack, VStack } from "@chakra-ui/react";
+// import axios from "axios";
+// import { useSelector } from "react-redux";
+// import { Link } from "react-router-dom";
+// import NavBar from "../components/NavBar";
+
+// const Home = () => {
+//   const [isLoggedIn, setIsLoggedIn] = useState(true);
+//   const toggleLoginStatus = () => {
+//     setIsLoggedIn(!isLoggedIn);
+//   };
+//   const [internships, setInternships] = useState([]);
+//   const [recInternships, setRecInternships] = useState([]);
+//   const [skills, setSkills] = useState([]);
+//   const { userId } = useSelector((state) => state.user);
+
+//   useEffect(() => {
+//     const viewRecommendedInternships = async () => {
+//       try {
+//         const accessToken = window.sessionStorage.getItem("accessToken");
+//         const { data } = await axios.post(
+//           `https://gyanbackend.aim4u.co.in/intern/rec/`,
+//           { user: userId },
+//           {
+//             headers: {
+//               Authorization: `Bearer ${accessToken}`,
+//             },
+//           }
+//         );
+//         setRecInternships(data);
+//         console.log("Rec intern\n", data);
+//       } catch (error) {
+//         console.log(error);
+//       }
+//     };
+//     const getUserData = async () => {
+//       try {
+//         const accessToken = window.sessionStorage.getItem("accessToken");
+//         const { data } = await axios.post(
+//           `https://gyanbackend.aim4u.co.in/user-data/`,
+//           { user: userId },
+//           {
+//             headers: {
+//               Authorization: `Bearer ${accessToken}`,
+//             },
+//           }
+//         );
+//         let inputString = data.skills;
+//         inputString = inputString.replace(/'/g, '"');
+//         let myArray = JSON.parse(inputString);
+//         setSkills(myArray);
+//       } catch (error) {
+//         console.log(error);
+//       }
+//     };
+//     getUserData();
+//     viewRecommendedInternships();
+//   }, [userId]);
+
+//   useEffect(() => {
+//     axios
+//       .get(`https://gyanbackend.aim4u.co.in/intern/all-internship/`)
+//       .then((res) => {
+//         setInternships(res.data);
+//         console.log("Internships:", res.data);
+//       })
+//       .catch((err) => {
+//         console.log(err);
+//       });
+//   }, [userId]);
+//   const { isAdmin } = useSelector((state) => {
+//     return state.user;
+//   });
+//   const { isAuthenticated } = useSelector((state) => {
+//     return state.user;
+//   });
+//   return (
+//     <div style={{ maxWidth: "100vw" }}>
+//       <NavBar isAdmin={isAdmin} />
+//       <Heading margin="" size="2xl" ml="80px" paddingBottom="15px">
+//         <HStack>
+//           <Box>
+//             <Text>Develop </Text>
+//           </Box>
+//           <Box>
+//             <Text color="#9acd32" paddingTop="0px">
+//               Skills
+//             </Text>{" "}
+//           </Box>
+//         </HStack>
+//         <Text>
+//           from the <u>best source</u>...
+//         </Text>
+//       </Heading>
+//       {isAuthenticated && (
+//         <Box>
+//           {skills.length > 0 && (
+//             <Heading ml="80px" paddingTop="25px" paddingBottom="50px">
+//               <Text fontSize="31px" fontWeight="bold">
+//                 {" "}
+//                 Hey,{" "}
+//               </Text>
+//               <Text
+//                 fontSize="24px"
+//                 display={"flex"}
+//                 flexDirection={"row"}
+//                 flexWrap={"wrap"}
+//               >
+//                 <Text>it seems that you are well equipped with</Text>
+//                 {skills.map((item) => {
+//                   const x = " " + item + ",";
+//                   return <Text whiteSpace={"pre-wrap"}>{x}</Text>;
+//                 })}
+//                 <Text>and a lot more.</Text>
+//               </Text>
+//             </Heading>
+//           )}
+//           <Box bg="#e8f3fd" w={"full"}>
+//             <Text fontSize="35px" fontWeight="bold" ml="80px" paddingTop="15px">
+//               Recommended Internships
+//             </Text>
+//             <VStack bg="#e8f3fd" w={"full"}>
+//               {recInternships.map((internship) => (
+//                 <Box
+//                   key={internship.id} // assuming each internship has a unique id
+//                   w="80%"
+//                   h="20%"
+//                   ml="100px"
+//                   mt="30px"
+//                   bg="white"
+//                   borderRadius="10px"
+//                   boxShadow="2px -2px 10px #000080"
+//                 >
+//                   <Text
+//                     fontSize="30px"
+//                     fontWeight="semibold"
+//                     ml="25px"
+//                     paddingTop="25px"
+//                   >
+//                     {internship.Internship_title}
+//                   </Text>
+//                   <Text
+//                     fontSize="23px"
+//                     fontWeight="semibold"
+//                     ml="25px"
+//                     paddingBottom="19px"
+//                   >
+//                     Gyan/Aim4U
+//                   </Text>
+//                   <hr />
+//                   <hr />
+//                   <hr />
+//                   <Text
+//                     fontSize="14px"
+//                     fontWeight="bold"
+//                     ml="25px"
+//                     paddingTop="25px"
+//                     lineHeight="30px"
+//                   >
+//                     {/* Openings: {internship.openings} <br /> */}
+//                     Techstack: {internship.key_skills} <br />
+//                     Duration: {internship.duration_weeks} <br />
+//                     Fees: {internship.fees}
+//                     <br />
+//                   </Text>
+//                   <Link to={`/details/${internship.id}`}>
+//                     <Text
+//                       fontSize="14px"
+//                       cursor={"pointer"}
+//                       fontWeight="semibold"
+//                       ml="25px"
+//                       color="#9acd32"
+//                       paddingTop="10px"
+//                     >
+//                       View details
+//                     </Text>
+//                   </Link>
+//                 </Box>
+//               ))}
+//             </VStack>
+//           </Box>
+//         </Box>
+//       )}
+
+//       <Text fontSize="25px" fontWeight="bold" ml="80px" paddingTop="15px">
+//         {" "}
+//         And here are all the internships{" "}
+//       </Text>
+//       <Text fontSize="25px" fontWeight="bold" ml="80px" paddingBottom="20px">
+//         {" "}
+//         Enroll and chart your career journey!{" "}
+//       </Text>
+
+//       <Box bg="#e8f3fd" w={"full"}>
+//         <Text
+//           fontSize="4xl"
+//           fontWeight="bold"
+//           paddingTop="15px"
+//           textAlign={"center"}
+//         >
+//           All Internships
+//         </Text>
+
+//         <VStack bg="#e8f3fd" w={"full"}>
+//           {internships.map((internship) => (
+//             <Box
+//               key={internship.id} // assuming each internship has a unique id
+//               w="80%"
+//               h="300px"
+//               mt="30px"
+//               mb="10px"
+//               bg="white"
+//               borderRadius="10px"
+//               boxShadow="2px -2px 10px #000080"
+//             >
+//               <Text
+//                 fontSize="30px"
+//                 fontWeight="semibold"
+//                 ml="25px"
+//                 paddingTop="25px"
+//               >
+//                 {internship.Internship_title}
+//               </Text>
+//               <Text
+//                 fontSize="23px"
+//                 fontWeight="semibold"
+//                 ml="25px"
+//                 paddingBottom="19px"
+//               >
+//                 Gyan/Aim4U
+//               </Text>
+//               <hr />
+//               <hr />
+//               <hr />
+//               <Text
+//                 fontSize="14px"
+//                 fontWeight="bold"
+//                 ml="25px"
+//                 paddingTop="25px"
+//                 lineHeight="30px"
+//               >
+//                 {/* Openings: {internship.openings} <br /> */}
+//                 Techstack: {internship.key_skills} <br />
+//                 Duration: {internship.duration_weeks} <br />
+//                 Fees: {internship.fees}
+//                 <br />
+//               </Text>
+//               <Link to={`/details/${internship.id}`}>
+//                 <Text
+//                   fontSize="14px"
+//                   cursor={"pointer"}
+//                   fontWeight="semibold"
+//                   ml="25px"
+//                   color="#9acd32"
+//                   paddingTop="10px"
+//                 >
+//                   View details
+//                 </Text>
+//               </Link>
+//             </Box>
+//           ))}
+//         </VStack>
+//       </Box>
+//     </div>
+//   );
+// };
+
+// export default Home;
+
+import React, { useEffect, useState } from "react";
+import {
+  Heading,
+  Box,
+  Text,
+  HStack,
+  VStack,
+  useBreakpointValue,
+} from "@chakra-ui/react";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import NavBar from "../components/NavBar";
+
+const Home = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const toggleLoginStatus = () => {
+    setIsLoggedIn(!isLoggedIn);
+  };
+  const [internships, setInternships] = useState([]);
+  const [recInternships, setRecInternships] = useState([]);
+  const [skills, setSkills] = useState([]);
+  const { userId } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    const viewRecommendedInternships = async () => {
+      try {
+        const accessToken = window.sessionStorage.getItem("accessToken");
+        const { data } = await axios.post(
+          `https://gyanbackend.aim4u.co.in/intern/rec/`,
+          { user: userId },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        setRecInternships(data);
+        console.log("Rec intern\n", data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const getUserData = async () => {
+      try {
+        const accessToken = window.sessionStorage.getItem("accessToken");
+        const { data } = await axios.post(
+          `https://gyanbackend.aim4u.co.in/user-data/`,
+          { user: userId },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        let inputString = data.skills;
+        inputString = inputString.replace(/'/g, '"');
+        let myArray = JSON.parse(inputString);
+        setSkills(myArray);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getUserData();
+    viewRecommendedInternships();
+  }, [userId]);
+
+  useEffect(() => {
+    axios
+      .get(`https://gyanbackend.aim4u.co.in/intern/all-internship/`)
+      .then((res) => {
+        setInternships(res.data);
+        console.log("Internships:", res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [userId]);
+
+  const { isAdmin } = useSelector((state) => state.user);
+  const { isAuthenticated } = useSelector((state) => state.user);
+
+  const isLargeScreen = useBreakpointValue({ base: false, lg: true });
+
+  return (
+    <div style={{ maxWidth: "100vw" }}>
+      <NavBar isAdmin={isAdmin} />
+
+      <Heading
+        size={isLargeScreen ? "2xl" : "lg"}
+        ml={isLargeScreen ? "80px" : "20px"}
+        paddingBottom="15px"
+      >
+        <HStack>
+          <Box>
+            <Text>Develop </Text>
+          </Box>
+          <Box>
+            <Text color="#9acd32" paddingTop="0px">
+              Skills
+            </Text>{" "}
+          </Box>
+        </HStack>
+        <Text>
+          from the <u>best source</u>...
+        </Text>
+      </Heading>
+
+      {isAuthenticated && (
+        <Box>
+          {skills.length > 0 && (
+            <Heading
+              ml={isLargeScreen ? "80px" : "20px"}
+              paddingTop="25px"
+              paddingBottom="50px"
+            >
+              <Text
+                fontSize={isLargeScreen ? "31px" : "24px"}
+                fontWeight="bold"
+              >
+                {" "}
+                Hey,{" "}
+              </Text>
+              <Text
+                fontSize={isLargeScreen ? "24px" : "18px"}
+                display={"flex"}
+                flexDirection={"row"}
+                flexWrap={"wrap"}
+              >
+                <Text>it seems that you are well equipped with</Text>
+                {skills.map((item, index) => (
+                  <Text whiteSpace={"pre-wrap"} key={index}>
+                    {" "}
+                    {index !== skills.length - 1 ? `${item},` : `${item}`}{" "}
+                  </Text>
+                ))}
+                <Text>and a lot more.</Text>
+              </Text>
+            </Heading>
+          )}
+
+          <Box bg="#e8f3fd" w="full">
+            <Text
+              fontSize={isLargeScreen ? "35px" : "24px"}
+              fontWeight="bold"
+              ml={isLargeScreen ? "80px" : "20px"}
+              paddingTop="15px"
+            >
+              Recommended Internships
+            </Text>
+
+            <VStack bg="#e8f3fd" w="full">
+              {recInternships.map((internship) => (
+                <Box
+                  key={internship.id}
+                  w={isLargeScreen ? "1060px" : "90%"}
+                  h={isLargeScreen ? "340px" : "auto"}
+                  ml={isLargeScreen ? "100px" : "10px"}
+                  mt={isLargeScreen ? "30px" : "10px"}
+                  bg="white"
+                  borderRadius="10px"
+                  boxShadow="2px -2px 10px #000080"
+                >
+                  <Text
+                    fontSize={isLargeScreen ? "30px" : "18px"}
+                    fontWeight="semibold"
+                    ml="25px"
+                    paddingTop="25px"
+                  >
+                    {internship.Internship_title}
+                  </Text>
+                  <Text
+                    fontSize={isLargeScreen ? "23px" : "16px"}
+                    fontWeight="semibold"
+                    ml="25px"
+                    paddingBottom="19px"
+                  >
+                    Gyan/Aim4U
+                  </Text>
+                  <hr />
+                  <hr />
+                  <hr />
+                  <Text
+                    fontSize={isLargeScreen ? "14px" : "12px"}
+                    fontWeight="bold"
+                    ml="25px"
+                    paddingTop="25px"
+                    lineHeight={isLargeScreen ? "30px" : "18px"}
+                  >
+                    Techstack: {internship.key_skills} <br />
+                    Duration: {internship.duration_weeks} <br />
+                    Fees: {internship.fees}
+                    <br />
+                  </Text>
+                  <Link to={`/details/${internship.id}`}>
+                    <Text
+                      fontSize={isLargeScreen ? "14px" : "12px"}
+                      cursor={"pointer"}
+                      fontWeight="semibold"
+                      ml="25px"
+                      color="#9acd32"
+                      paddingTop="10px"
+                    >
+                      View details
+                    </Text>
+                  </Link>
+                </Box>
+              ))}
+            </VStack>
+          </Box>
+        </Box>
+      )}
+
+      <Text
+        fontSize={isLargeScreen ? "25px" : "18px"}
+        fontWeight="bold"
+        ml={isLargeScreen ? "80px" : "20px"}
+        paddingTop="15px"
+      >
+        {" "}
+        And here are all the internships{" "}
+      </Text>
+      <Text
+        fontSize={isLargeScreen ? "25px" : "18px"}
+        fontWeight="bold"
+        ml={isLargeScreen ? "80px" : "20px"}
+        paddingBottom="20px"
+      >
+        {" "}
+        Enroll and chart your career journey!{" "}
+      </Text>
+
+      <Box bg="#e8f3fd" w="full">
+        <Text
+          fontSize={isLargeScreen ? "35px" : "24px"}
+          fontWeight="bold"
+          ml={isLargeScreen ? "80px" : "20px"}
+          paddingTop="15px"
+        >
+          All Internships
+        </Text>
+
+        <VStack bg="#e8f3fd" w="full">
+          {internships.map((internship) => (
+            <Box
+              key={internship.id}
+              w={isLargeScreen ? "1060px" : "90%"}
+              h={isLargeScreen ? "340px" : "auto"}
+              ml={isLargeScreen ? "100px" : "10px"}
+              mt={isLargeScreen ? "30px" : "10px"}
+              bg="white"
+              borderRadius="10px"
+              boxShadow="2px -2px 10px #000080"
+            >
+              <Text
+                fontSize={isLargeScreen ? "30px" : "18px"}
+                fontWeight="semibold"
+                ml="25px"
+                paddingTop="25px"
+              >
+                {internship.Internship_title}
+              </Text>
+              <Text
+                fontSize={isLargeScreen ? "23px" : "16px"}
+                fontWeight="semibold"
+                ml="25px"
+                paddingBottom="19px"
+              >
+                Gyan/Aim4U
+              </Text>
+              <hr />
+              <hr />
+              <hr />
+              <Text
+                fontSize={isLargeScreen ? "14px" : "12px"}
+                fontWeight="bold"
+                ml="25px"
+                paddingTop="25px"
+                lineHeight={isLargeScreen ? "30px" : "18px"}
+              >
+                Techstack: {internship.key_skills} <br />
+                Duration: {internship.duration_weeks} <br />
+                Fees: {internship.fees}
+                <br />
+              </Text>
+              <Link to={`/details/${internship.id}`}>
+                <Text
+                  fontSize={isLargeScreen ? "14px" : "12px"}
+                  cursor={"pointer"}
+                  fontWeight="semibold"
+                  ml="25px"
+                  color="#9acd32"
+                  paddingTop="10px"
+                >
+                  View details
+                </Text>
+              </Link>
+            </Box>
+          ))}
+        </VStack>
+      </Box>
+    </div>
+  );
+};
+
+export default Home;
